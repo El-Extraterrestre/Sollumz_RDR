@@ -524,6 +524,18 @@ def updateSceneSollumzGame(self, context):
     context.scene.sollum_shader_game_type = context.scene.sollum_game_type
     context.scene.sollum_collision_material_game_type = context.scene.sollum_game_type
 
+def updatePalIndex(self, context):
+    pal_tex = context.scene.pal_texture
+    if not pal_tex:
+        return
+    width = pal_tex.size[0]
+    i = context.scene.pal_index
+    if i < 0 or i >= width:
+        return
+    color = (pal_tex.pixels[i*4+0], pal_tex.pixels[i*4+1], pal_tex.pixels[i*4+2])
+    context.scene.pal_color = color
+    context.scene.pal_number = f"{(i / (width - 1)):.5f}"
+
 def register():
     bpy.types.Object.sollum_game_type = bpy.props.EnumProperty(
         items=items_from_enums(SollumzGame),
@@ -622,18 +634,6 @@ def register():
 
     bpy.types.Scene.vert_paint_alpha = bpy.props.FloatProperty(
         name="Alpha", min=-1, max=1)
-
-    def updatePalIndex(self, context):
-        pal_tex = context.scene.pal_texture
-        if not pal_tex:
-            return
-        width = pal_tex.size[0]
-        i = context.scene.pal_index
-        if i < 0 or i >= width:
-            return
-        color = (pal_tex.pixels[i*4+0], pal_tex.pixels[i*4+1], pal_tex.pixels[i*4+2])
-        context.scene.pal_color = color
-        context.scene.pal_number = f"{(i / (width - 1)):.5f}"
 
     bpy.types.Scene.pal_texture = bpy.props.PointerProperty(
         name="Pal Texture",
